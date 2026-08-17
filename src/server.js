@@ -16,8 +16,8 @@ import 'dotenv/config';
 
 // Для вірного імпорту dotenv явно вкажемо розташування файлу
 // -----------------------------------------------
-const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+// const path = require('path');
+// require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
 const PORT = process.env.PORT ?? 3000; // Використовуємо значення з .env або дефолтний порт 3000
