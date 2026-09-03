@@ -9,24 +9,7 @@ import { TAGS } from '../constants/tags.js';
 // Визначення схеми для моделі Note
 export const noteSchema = new Schema(
   {
-    // Старі поля документа, які мають зберігатися в базі даних:
-    name: {
-      type: String,
-    },
-    age: {
-      type: Number,
-    },
-    gender: {
-      type: String,
-    },
-    avgMark: {
-      type: Number,
-    },
-    onDuty: {
-      type: Boolean,
-    },
-
-    // Нові поля (HW-03):
+    // Нові поля з поточного домашнього завдання:
     title: {
       type: String,
       // Кастомне повідомлення про помилку
@@ -65,49 +48,6 @@ export const noteSchema = new Schema(
 // Створення моделі на основі схеми
 // Mongoose сам зробить з Note -> notes
 export const Note = model('Note', noteSchema);
-
-//  ===================== ВЕРСІЯ 1 ============================
-// // src/models/note.js
-// // ==============================
-// // Mongoose / MongoDB
-
-// import { Schema, model } from 'mongoose';
-// import { TAGS } from '../constants/tags.js'; // змінено шлях на правильний відносно розташування файлу
-
-// // Визначення схеми для моделі Note
-// export const noteSchema = new Schema(
-//   {
-//     title: {
-//       type: String,
-//       required: [true, 'Title is a required field'],
-//       trim: true,
-//     },
-//     content: {
-//       type: String,
-//       default: '',
-//       trim: true,
-//     },
-//     tag: {
-//       type: String,
-//       enum: {
-//         values: TAGS, // Передаємо наш масив фіксованих значень
-//         message: '{VALUE} is not allowed tag',
-//       },
-//       default: 'Todo',
-//       index: true, // Індекс для швидкого фільтрування за тегом
-//     },
-//   },
-//   {
-//     // Автоматично створює та оновлює поля createdAt та updatedAt
-//     timestamps: true,
-//     // Вимикає системне поле версії __v, яке Mongoose додає за замовчуванням
-//     versionKey: false,
-//   },
-// );
-
-// // Створення моделі на основі схеми
-// // Mongoose сам зробить з Note -> notes
-// export const Note = model('Note', noteSchema);
 
 // ================== HW-02 code =======================
 // // src/models/note.js
