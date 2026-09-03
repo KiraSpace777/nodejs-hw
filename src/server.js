@@ -9,10 +9,12 @@
 // npm install dotenv ===  зчитування змінних оточення
 // npm install mongoose === бібліотека Mongoose, підключення до MongoDB (БД)
 // npm install http-errors === пакет http-errors дозволяє створювати помилки з потрібним статусом і повідомленням.
+// npm install celebrate  ===	Бібліотеки валідації: Joi + celebrate (включає Joi).
 
 import express from 'express';
 import 'dotenv/config';
 import cors from 'cors';
+import { errors } from 'celebrate'; // ДОДАНО: Імпорт вбудованого мідлвару для обробки помилок celebrate
 
 import connectMongoDB from './db/connectMongoDB.js';
 import { logger } from './middleware/logger.js';
@@ -22,10 +24,10 @@ import { errorHandler } from './middleware/errorHandler.js';
 import notesRoutes from './routes/notesRoutes.js';
 
 const app = express();
-const PORT = process.env.PORT ?? 3030; // Використовуємо значення з .env або дефолтний порт для сервера 3030
+const PORT = process.env.PORT ?? 3030;
 
 // Middleware list
-// ===============================================
+// ==========================================
 
 // Глобальні middleware
 app.use(logger); // 1. Middleware, Логер pino, першим — бачить усі запити
@@ -38,6 +40,7 @@ app.use(
     limit: '100kb', // максимум 100 кілобайт
   }),
 );
+
 app.use(cors()); // 3. Middleware, дозвіл для запитів з інших доменів
 
 // Логування часу
@@ -47,28 +50,94 @@ app.use((req, res, next) => {
 });
 
 // МАРШРУТИ
-// ===============================================
+// ------------------------------
 // підключаємо групу маршрутів нотатків
 app.use(notesRoutes);
 
-// Middleware 404 — якщо маршрут не знайдено (після всіх маршрутів)
-// -----------------------------------------------
+// ДОДАНО: Обробник помилок від celebrate (має стояти ПЕРЕД кастомними errorHandler та після маршрутів)
+// Він перехоплює помилки валідації Joi і повертає статус 400 Bad Request із деталями помилки клієнту
+app.use(errors());
+
+// Middleware 404 - якщо маршрут не знайдено (після всіх маршрутів)
 app.use(notFoundHandler);
 
-// Middleware 500 (Error) — якщо під час запиту виникла помилка (останнє)
-// -----------------------------------------------
+// Middleware 500 (Error) - якщо під час запиту виникла помилка (останнє)
 app.use(errorHandler);
 
 // Підключення до MongoDB
-// ===============================================
+// ==========================================
 await connectMongoDB();
 
 // Запуск сервера
-// ===============================================
+// ==========================================
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
+// =======================================================
+// ==================== HW-02 ============================
+// =======================================================
+// import express from 'express';
+// import 'dotenv/config';
+// import cors from 'cors';
+
+// import connectMongoDB from './db/connectMongoDB.js';
+// import { logger } from './middleware/logger.js';
+// import { notFoundHandler } from './middleware/notFoundHandler.js';
+// import { errorHandler } from './middleware/errorHandler.js';
+
+// import notesRoutes from './routes/notesRoutes.js';
+
+// const app = express();
+// const PORT = process.env.PORT ?? 3030; // Використовуємо значення з .env або дефолтний порт для сервера 3030
+
+// // Middleware list
+// // ===============================================
+
+// // Глобальні middleware
+// app.use(logger); // 1. Middleware, Логер pino, першим — бачить усі запити
+
+// // 2. Middleware з типізацією для стандартного парсингу JSON + парсингу за специфікацією JSON:API
+// // ВАЖЛИВО: без тіла "req.body", без "Content-Type: application/json" і без "express.json()" у тебе завжди буде порожній "req.body".
+// app.use(
+//   express.json({
+//     type: ['application/json', 'application/vnd.api+json'],
+//     limit: '100kb', // максимум 100 кілобайт
+//   }),
+// );
+// app.use(cors()); // 3. Middleware, дозвіл для запитів з інших доменів
+
+// // Логування часу
+// app.use((req, res, next) => {
+//   console.log(`Time: ${new Date().toLocaleString()}`);
+//   next();
+// });
+
+// // МАРШРУТИ
+// // ===============================================
+// // підключаємо групу маршрутів нотатків
+// app.use(notesRoutes);
+
+// // Middleware 404 — якщо маршрут не знайдено (після всіх маршрутів)
+// // -----------------------------------------------
+// app.use(notFoundHandler);
+
+// // Middleware 500 (Error) — якщо під час запиту виникла помилка (останнє)
+// // -----------------------------------------------
+// app.use(errorHandler);
+
+// // Підключення до MongoDB
+// // ===============================================
+// await connectMongoDB();
+
+// // Запуск сервера
+// // ===============================================
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}`);
+// });
+// =============================================================
+
+// =============================================================
 // ======================= (КОМЕНТАРІ) =========================
 // Логування часу у поточному коді виконується не під час перезапуску сервера, а при кожному HTTP-запиті від клієнта до цього сервера.
 // Так як ми винесли функцію console.log всередину проміжного ПЗ (middleware) app.use((req, res, next) => { ... }). Цей блок коду спрацьовує виключно тоді, коли хтось (наприклад, ми через браузер або Postman) звертається до сервера за адресою http://localhost:3000/.
