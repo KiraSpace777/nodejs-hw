@@ -6,6 +6,7 @@ import { celebrate, Joi, Segments } from 'celebrate';
 import { isValidObjectId } from 'mongoose';
 import { TAGS } from '../constants/tags.js';
 
+// ----------------------------------------------------
 // Кастомна валідація для перевірки MongoDB ObjectId за допомогою mongoose
 // ----------------------------------------------------
 const validateObjectId = (value, helpers) => {
@@ -17,6 +18,7 @@ const validateObjectId = (value, helpers) => {
   return value;
 };
 
+// ----------------------------------------------------
 // Схема getAllNotesSchema (Пагінація та Фільтрація)
 // ----------------------------------------------------
 export const getAllNotesSchema = celebrate({
@@ -37,6 +39,7 @@ export const getAllNotesSchema = celebrate({
   }),
 });
 
+// ----------------------------------------------------
 // Схема noteIdSchema (використовується для GET /notes/:noteId та DELETE /notes/:noteId)
 // ----------------------------------------------------
 export const noteIdSchema = celebrate({
@@ -46,6 +49,7 @@ export const noteIdSchema = celebrate({
   }),
 });
 
+// ----------------------------------------------------
 // Схема createNoteSchema (активна версія без сторонніх полів студентів)
 // ----------------------------------------------------
 export const createNoteSchema = celebrate({
@@ -63,6 +67,7 @@ export const createNoteSchema = celebrate({
   }),
 });
 
+// ----------------------------------------------------
 // Схема updateNoteSchema (параметри маршруту та тіло запиту в одній схемі)
 // ----------------------------------------------------
 export const updateNoteSchema = celebrate({

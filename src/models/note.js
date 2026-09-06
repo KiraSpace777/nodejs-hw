@@ -2,8 +2,7 @@
 // ------------------
 // Mongoose / MongoDB
 
-import { Schema } from 'mongoose';
-import { model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { TAGS } from '../constants/tags.js';
 
 // Визначення схеми для моделі Note
@@ -36,6 +35,12 @@ export const noteSchema = new Schema(
       // Індекс для швидкого фільтрування за тегом
       index: true,
     },
+    // Нова властивість, Зв'язок між моделями (для USER по ID)
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
   },
   {
     // Автоматично створює та оновлює поля createdAt та updatedAt
@@ -45,67 +50,13 @@ export const noteSchema = new Schema(
   },
 );
 
+// Оновлюємо індекс поля userId, тому що будемо використовувати його при пошуку
+// Значення 1 означає сортування за зростанням, але для індексу напрямок не має особливого значення.
+noteSchema.index({ userId: 1, gender: 1, avgMark: 1 });
+
 // Створення моделі на основі схеми
 // Mongoose сам зробить з Note -> notes
 export const Note = model('Note', noteSchema);
-
-// ================== HW-02 code =======================
-// // src/models/note.js
-// // --------------------------------
-// // Mongoose /  MongoDB
-
-// import { Schema } from 'mongoose';
-// import { model } from 'mongoose';
-
-// // Схема нотатки
-// // ----------------------------------
-// const NOTE_TAGS = Object.freeze([
-//   'Work',
-//   'Personal',
-//   'Meeting',
-//   'Shopping',
-//   'Ideas',
-//   'Travel',
-//   'Finance',
-//   'Health',
-//   'Important',
-//   'Todo',
-// ]);
-
-// // Визначення схеми для моделі Note
-// export const noteSchema = new Schema(
-//   {
-//     title: {
-//       type: String,
-//       required: [true, 'Заголовок є обов’язковим полем'], // Кастомне повідомлення про помилку
-//       trim: true, // Автоматично видаляє пробіли на початку та в кінці рядка
-//     },
-//     content: {
-//       type: String,
-//       default: '', // Значення за замовчуванням — порожній рядок
-//       trim: true,
-//     },
-//     tag: {
-//       type: String,
-//       enum: {
-//         values: NOTE_TAGS, // Передаємо наш масив фіксованих значень
-//         message: '{VALUE} не є дозволеним тегом', // Помилка, якщо передано значення не зі списку
-//       },
-//       default: 'Todo', // Значення за замовчуванням, якщо тег не передали
-//     },
-//   },
-//   {
-//     // Автоматично створює та оновлює поля createdAt та updatedAt
-//     timestamps: true,
-//     // Вимикає системне поле версії _ _v, яке Mongoose додає за замовчуванням
-//     versionKey: false,
-//   },
-// );
-
-// // Створення моделі на основі схеми
-// // Mongoose сам зробить з Note -> notes
-// export const Note = model('Note', noteSchema);
-// ================== HW-02 code =======================
 
 // ================ Mongoose /  MongoDB (important )===================
 // Потрібно знати одне головне правило Mongoose при формуванні моделі та бази колекції (бази даних): За замовчуванням Mongoose бере назву вашої моделі (перший аргумент у model()), переводить її в нижній регістр і робить її у множині.
