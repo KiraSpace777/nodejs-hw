@@ -6,7 +6,7 @@ import { Schema, model } from 'mongoose';
 import { TAGS } from '../constants/tags.js';
 
 // Визначення схеми для моделі Note
-export const noteSchema = new Schema(
+const noteSchema = new Schema(
   {
     // Нові поля з поточного домашнього завдання:
     title: {
@@ -52,7 +52,7 @@ export const noteSchema = new Schema(
 
 // Оновлюємо індекс поля userId, тому що будемо використовувати його при пошуку
 // Значення 1 означає сортування за зростанням, але для індексу напрямок не має особливого значення.
-noteSchema.index({ userId: 1, gender: 1, avgMark: 1 });
+noteSchema.index({ tag: 1, userId: 1 });
 
 // Створення моделі на основі схеми
 // Mongoose сам зробить з Note -> notes

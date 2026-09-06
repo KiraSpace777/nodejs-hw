@@ -10,17 +10,24 @@
 // npm install mongoose === бібліотека Mongoose, підключення до MongoDB (БД)
 // npm install http-errors === пакет http-errors дозволяє створювати помилки з потрібним статусом і повідомленням.
 // npm install celebrate  ===	Бібліотеки валідації: Joi + celebrate (включає Joi).
+// npm i bcrypt  === Бібліотека для безпечного хешування паролів, додає до паролю сіль (salt) — випадковий рядок
+// npm i cookie-parser === парсер для Cookies
 
 import express from 'express';
 import 'dotenv/config';
 import cors from 'cors';
 import { errors } from 'celebrate'; // ДОДАНО: Імпорт вбудованого мідлвару для обробки помилок celebrate
+import cookieParser from 'cookie-parser';
 
 import connectMongoDB from './db/connectMongoDB.js';
+
+// Імпортуємо middleware
 import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
+// Імпортуємо маршрути
+import authRoutes from './routes/authRoutes.js';
 import notesRoutes from './routes/notesRoutes.js';
 
 const app = express();
@@ -42,6 +49,7 @@ app.use(
 );
 
 app.use(cors()); // 3. Middleware, дозвіл для запитів з інших доменів
+app.use(cookieParser()); // (module 4) Cookies / Піключаємо парсер кук
 
 // Логування часу
 app.use((req, res, next) => {
@@ -51,6 +59,9 @@ app.use((req, res, next) => {
 
 // МАРШРУТИ
 // ------------------------------
+// підключаємо групу маршрутів користувача (User), (4.5 - Реєстрація користувачів)
+app.use(authRoutes);
+
 // підключаємо групу маршрутів нотатків
 app.use(notesRoutes);
 

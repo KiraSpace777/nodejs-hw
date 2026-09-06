@@ -3,6 +3,8 @@
 // Роутер для нотатків
 
 import { Router } from 'express';
+import { celebrate } from 'celebrate';
+
 import {
   getAllNotes,
   getNoteById,
@@ -19,37 +21,18 @@ import {
   updateNoteSchema,
 } from '../validations/notesValidation.js';
 
+import { authenticate } from '../middleware/authenticate.js';
+
 const router = Router();
 
+// (Module 4) Додаємо middleware аутентифікації до всіх шляхів, що починаються з /notes
+router.use('/notes', authenticate);
+
 // Маршрути з інтегрованою валідацією celebrate
-router.get('/notes', getAllNotesSchema, getAllNotes);
-router.get('/notes/:noteId', noteIdSchema, getNoteById);
-router.post('/notes', createNoteSchema, createNote);
-router.delete('/notes/:noteId', noteIdSchema, deleteNote);
-router.patch('/notes/:noteId', updateNoteSchema, updateNote);
+router.get('/notes', celebrate(getAllNotesSchema), getAllNotes);
+router.get('/notes/:noteId', celebrate(noteIdSchema), getNoteById);
+router.post('/notes', celebrate(createNoteSchema), createNote);
+router.delete('/notes/:noteId', celebrate(noteIdSchema), deleteNote);
+router.patch('/notes/:noteId', celebrate(updateNoteSchema), updateNote);
 
 export default router;
-
-// ================== HW-02 code =======================
-// // src/routes/notesRoutes.js
-// // ------------------------------------
-// // Роутер для нотатків
-
-// import { Router } from 'express';
-// import {
-//   getAllNotes,
-//   getNoteById,
-//   createNote,
-//   deleteNote,
-//   updateNote,
-// } from '../controllers/notesController.js';
-
-// const router = Router();
-
-// router.get('/notes', getAllNotes);
-// router.get('/notes/:noteId', getNoteById);
-// router.post('/notes', createNote);
-// router.delete('/notes/:noteId', deleteNote);
-// router.patch('/notes/:noteId', updateNote);
-
-// export default router;
