@@ -9,6 +9,12 @@ const userSchema = new Schema(
     username: { type: String, trim: true },
     email: { type: String, unique: true, required: true, trim: true },
     password: { type: String, required: true, minlength: 8 },
+    // (5.8.1) Аватар користувача / додаємо необов’язкову властивість
+    avatar: {
+      type: String,
+      required: false,
+      default: 'https://ac.goit.global/fullstack/react/default-avatar.jpg',
+    },
   },
   {
     timestamps: true,
