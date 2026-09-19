@@ -10,7 +10,7 @@ import { createSession, setSessionCookies } from '../services/auth.js';
 import { Session } from '../models/session.js';
 
 import jwt from 'jsonwebtoken';
-import { sendEmail } from '../utils/sendEmail.js';
+import { sendEmail } from '../utils/sendMail.js';
 
 import handlebars from 'handlebars';
 import path from 'node:path';

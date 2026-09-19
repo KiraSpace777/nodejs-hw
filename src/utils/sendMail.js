@@ -1,4 +1,4 @@
-// src/utils/sendEmail.js
+// src/utils/sendMail.js
 
 import nodemailer from 'nodemailer';
 import createHttpError from 'http-errors';
