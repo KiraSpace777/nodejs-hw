@@ -38,7 +38,7 @@ import notesRoutes from './routes/notesRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 
 const app = express();
-const PORT = process.env.PORT ?? 3030;
+const PORT = process.env.PORT ?? 3000;
 
 // Middleware list
 // ==========================================
@@ -57,12 +57,6 @@ app.use(
 
 app.use(cors()); // 3. Middleware, дозвіл для запитів з інших доменів
 app.use(cookieParser()); // (module 4) Cookies / Піключаємо парсер кук
-
-// Логування часу
-app.use((req, res, next) => {
-  console.log(`Time: ${new Date().toLocaleString()}`);
-  next();
-});
 
 // МАРШРУТИ (РОУТИ)
 // ------------------------------
